@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+<title>Register</title>
+<link rel="icon" href="../images/AMS3.ico" type="image/ico">
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+<script src="../jquery/jquery.min.js"></script>
+<script src="../bootstrap/js/bootstrap.min.js"></script> 
+<link rel="stylesheet"  href="../css/loginregister.css">
+ <!-- For Sweet alert-->
+	<script src="../sweetalert/sweetalert.js"></script>
+    <link rel="stylesheet" href="../sweetalert/sweetalert.css">
+
+</head>
+<script src="../js/register_validation.js"></script> 
+<script>
+	$(document).ready(function(){
+	$("#btnSubmit").attr("disabled", true)
+	$('#username').keyup(function(){
+		var username = $(this).val();
+		if(username.length > 3){
+			$.ajax({
+				type : 'POST',
+				data : 'username='+username,
+				url  : '../php/check_username_availability.php',
+				success:function(responsedata){
+				
+					$("#username_message").html(responsedata);
+					$("#username_message").show();
+					
+					if($("#msg").html() === "Valid Username"){
+					
+						$("#btnSubmit").attr("disabled", false)
+					}else{
+						$("#btnSubmit").attr("disabled", true)
+					}
+					
+				}
+			});
+		}else{
+			$("#username_message").html("");
+			$("#username_message").hide();
+		}
+	});
+		
+		$("#password").focus(function(){
+			hidePasswordMessage();
+		});
+		
+		$("#confirm_password").focus(function(){
+			hidePasswordMessage();
+		});
+		
+		$("#email_id").focus(function(){
+			if($("#msg").html() === "Valid Username"){
+				$("#username_message").html("");
+				$("#username_message").hide();
+			}
+		});
+		
+	});
+	
+	function hidePasswordMessage(){
+		var div1 = document.getElementById("password_message");
+		var div2 = document.getElementById("confirm_password_message");
+		
+		div1.innerHTML = "";
+		div1.style.display = "none";
+		
+		div2.innerHTML = "";
+		div2.style.display = "none";
+	}
+
+jQuery(document).ready(function(){
+    $('#phonenumber').blur(function(){
+        phone = $(this).val();
+		phone = phone.replace(/[^0-9]/g,'');
+		phone_new =$(this).val(phone);
+        if (phone.length != 10){
+		 $("#phoneno_message").css('color','red');
+		 $("#phoneno_message").html("Phone number must contain 10 digits.");
+		 $("#phoneno_message").show();
+		 $('#phonenumber').val('');
+           
+        }
+    });
+	$('#phonenumber').focus(function(){
+		$("#phoneno_message").html("");
+		$("#phoneno_message").hide();
+		
+	});
+});
+	
+	
+	
+</script>
+<body>
+	
+<div class="signup-form">	
+
+    <form action="../php/register.php" method="post" id="resitration_form" onSubmit="return validateForm();">
+	
+		<h2>Register Here</h2>
+		<p class="lead"></p>
+		
+        <div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-user"></i></span>
+				<input id="username" type="text" class="form-control" name="user_name" placeholder="Username" required>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group" id="username_message" style="display:none">
+			</div>
+        </div>
+		
+        <div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-paper-plane"></i></span>
+				<input type="email" class="form-control" id="email_id" name="email_id" placeholder="Email Address" required>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+				<input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+				<span   style="display: -webkit-box;cursor:pointer;" onclick="showpassword()"><i id="passwordeye" class="fa fa-eye"></i></span>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group" id="password_message" style="display:none">
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon">
+					<i class="fa fa-lock"></i>
+					<i class="fa fa-check"></i>
+				</span>
+				<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required>
+					<span style="display: -webkit-box;cursor:pointer;" onclick="showpass()"><i id="confirm_passwordeye" class="fa fa-eye"></i></span>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group" id="confirm_password_message" style="display:none">
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-phone"></i></span>
+				<input type="text" class="form-control" name="phone_no" placeholder="Phone Number" id="phonenumber"required>
+			</div>
+        </div>
+		<div class="form-group">
+			<div class="input-group" id="phoneno_message" style="display:none">
+			</div>
+        </div>
+		
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon" style="border:0;"><i class="fa fa-male" ></i></span>
+					<label class="radio-inline" >
+						<input  type="radio" name="gender" value="male" >Male
+					</label>
+				
+				<span class="input-group-addon" style="border:0;" ><i class="fa fa-female"></i></span>
+					<label class="radio-inline">
+						<input  type="radio" name="gender" value="female">Female
+					</label>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-home"></i></span>
+				<input type="text" class="form-control"  name="address" placeholder="Address" required>
+			</div>
+		</div>
+		
+		
+		<div align="center">
+			<div class="input-group" \>
+				<label style="font-size:15px;color:black; ">Select Security Question & Answer</b></label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-question"></i></span>
+			
+				<select class="form-control" name="security_question" style="cursor:pointer";>
+					
+					<option>What is your pet name?</option>
+					<option>Who is your favourite cricketer?</option>
+					<option>What is your first teacher name?</option>
+					<option>What is your favourite food?</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<div class="input-group">
+				<span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+				<input type="text" class="form-control" name="security_answer" placeholder="Security Answer" required>
+			</div>
+        </div>
+		
+		<div class="form-group"  >
+			
+			<button onclick="window.location = 'login.html';" style="width:100px" class="btn btn-primary" ><i class="fa fa-angle-left"></i> Back</button>
+			<button type="submit" id="btnSubmit" style="width:100px" class="btn btn-primary pull-right" >Register <i class="fa fa-angle-right"></i></button>
+		
+		</div>
+	</form>
+</div>
+	<script>
+	function showpassword(){
+	
+		var x=document.getElementById("password");
+			
+			if(x.type==="password"){
+			x.type="text";
+			document.getElementById("passwordeye").className = "fa fa-eye-slash";
+			}else{
+				x.type="password";
+				document.getElementById("passwordeye").className = "fa fa-eye";
+			}
+			
+	}
+	
+	
+	</script>
+	<script>
+	function showpass(){
+		var x=document.getElementById("confirm_password");
+			if(x.type==="password"){
+			x.type="text";
+			document.getElementById("confirm_passwordeye").className = "fa fa-eye-slash";
+			
+			}else{
+				x.type="password";
+				document.getElementById("confirm_passwordeye").className = "fa fa-eye";
+			}
+	}
+		$(document).ready(function() {
+	  $('#username').blur(function(){
+		var username = $(this).val().replace(/[^A-Z0-9_.]/ig, '');
+		$('#username').val(username);
+	  });
+	});
+
+	
+	</script>
+</body>    
+</html>
+	
+                 
